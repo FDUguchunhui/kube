@@ -1,0 +1,9 @@
+K8S_USER_NAME: cgu3
+K8S_USER_ID: xxxxxx
+K8S_USER_GROUP: 600567
+K8S_USER_HOME: '/rsrch5/home/biostatistics/YOUR_USER_NAME'
+K8S_CPU_PVC: YOUR_USER_NAME-cpu-home
+K8S_GPU_PVC: YOUR_USER_NAME-gpu-home
+K8S_GPU_SHARED_PVC: YOUR_USER_NAME-gpu-scratch
+IMAGE: hpcharbor.mdanderson.edu/zzhang19/sft:debug
+GPU_TYPE: NVIDIA-H100-80GB-HBM3
