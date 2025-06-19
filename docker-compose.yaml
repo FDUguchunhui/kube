@@ -1,0 +1,13 @@
+version: "3.8"  # Docker Compose file format version
+
+services:
+  app:
+    image: springlight123/finetune
+    platform: linux/amd64
+    # volumes:
+    #   - .:/app # only during testing
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - HOME=/Users/cgu3/Documents/sandbox/llm_tuning
+      - HF_LOCAL_STORAGE=huggingface_cache
+    command: python main.py

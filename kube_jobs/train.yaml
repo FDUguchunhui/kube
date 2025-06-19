@@ -3,7 +3,7 @@ kind: Job
 metadata:
   labels:
     k8s-user: cgu3
-  name: sft
+  name: cgu3-test
   namespace: yn-gpu-workload
 spec:
   backoffLimit: 0
@@ -11,35 +11,36 @@ spec:
     spec:
       containers:
       - env:
-        - name: HOME
-          value: /rsrch5/home/biostatistics/YOUR_USER_NAME
-        - name: MODEL
-          value: ${MODEL}
-        - name: DATASET
-          value: ${DATASET}
+        - name: CACHE_DIR
+          value: /rsrch5/home/biostatistics/cgu3
+        - name: HF_LOCAL_STORAGE
+          value: huggingface_cache
         - name: HF_TOKEN
-          value: ${HF_TOKEN}
-        image: hpcharbor.mdanderson.edu/zzhang19/sft:debug
+          value: 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
+        image: springlight123/finetune:latest
         imagePullPolicy: IfNotPresent
         name: main
         resources:
           limits:
-            cpu: '48'
+            cpu: 12
             memory: 1200Gi
-            nvidia.com/gpu: '8'
+            nvidia.com/gpu: 1
+          requests:
+            cpu: 12
+            memory: 1200Gi
+            nvidia.com/gpu: 1
         volumeMounts:
         - mountPath: /dev/shm
           name: shm
-        - mountPath: /rsrch5/home/biostatistics/YOUR_USER_NAME
+        - mountPath: /rsrch5/home/biostatistics/cgu3
           name: home
       nodeSelector:
         nvidia.com/gpu.present: 'true'
-        nvidia.com/gpu.product: NVIDIA-H100-80GB-HBM3
       restartPolicy: Never
       securityContext:
         fsGroup: 600567
         runAsGroup: 600567
-        runAsUser: xxxxxx
+        runAsUser: 284275
       volumes:
       - emptyDir:
           medium: Memory
@@ -47,5 +48,5 @@ spec:
         name: shm
       - name: home
         persistentVolumeClaim:
-          claimName: YOUR_USER_NAME-gpu-home
+          claimName: cgu3-gpu-home
   ttlSecondsAfterFinished: 60

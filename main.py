@@ -11,12 +11,22 @@ import dotenv
 
 dotenv.load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
-MOUNT_PATH = os.getenv("MOUNT_PATH")
+HOME = os.getenv("CACHE_DIR")
+HF_LOCAL_STORAGE = os.getenv("HF_LOCAL_STORAGE")
+model_path = os.path.join(HOME, HF_LOCAL_STORAGE, "models")
+log_path = os.path.join(HOME, HF_LOCAL_STORAGE, "logs")
+dataset_path = os.path.join(HOME, HF_LOCAL_STORAGE, "datasets")
+cache_path = os.path.join(HOME, HF_LOCAL_STORAGE, "cache")
+# create the directories if they don't exist
+os.makedirs(model_path, exist_ok=True)
+os.makedirs(log_path, exist_ok=True)
+os.makedirs(dataset_path, exist_ok=True)
+os.makedirs(cache_path, exist_ok=True)
 
 
-raw_datasets = load_dataset("glue", "mrpc", cache_dir=os.path.join(MOUNT_PATH, "datasets"), token=HF_TOKEN)
+raw_datasets = load_dataset("glue", "mrpc", cache_dir=dataset_path, token=HF_TOKEN)
 checkpoint = "bert-base-uncased"
-tokenizer = AutoTokenizer.from_pretrained(checkpoint, cache_dir=os.path.join(MOUNT_PATH, "models"), token=HF_TOKEN)
+tokenizer = AutoTokenizer.from_pretrained(checkpoint, cache_dir=model_path, token=HF_TOKEN)
 
 def tokenize_function(example):
     return tokenizer(example["sentence1"], example["sentence2"], truncation=True)
@@ -26,10 +36,10 @@ tokenized_datasets = raw_datasets.map(tokenize_function, batched=True)
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
 
-model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=2, cache_dir=os.path.join(MOUNT_PATH, "models"), token=HF_TOKEN)
+model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=2, cache_dir=model_path, token=HF_TOKEN)
 
 optimizer = AdamW(model.parameters(), lr=5e-5)
-metric = evaluate.load("glue", "mrpc", cache_dir="./cache")
+metric = evaluate.load("glue", "mrpc", cache_dir=cache_path)
 
 
 def compute_metrics(eval_preds):
@@ -40,7 +50,7 @@ def compute_metrics(eval_preds):
 
 
 training_args = TrainingArguments(
-    "./cache", 
+    output_dir=log_path, 
     max_steps=5, # for testing
     eval_strategy="epoch",
     # Enable GPU usage

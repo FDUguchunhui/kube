@@ -1,34 +1,36 @@
 FROM pytorch/pytorch:2.7.1-cuda11.8-cudnn9-devel
 
-# Set working directory
 WORKDIR /app
 
 # Install uv
 RUN pip install uv
 
-# Copy dependency files first for better caching
+# Copy only dependency config first for caching
 COPY pyproject.toml .
 
-# Install dependencies
+# Install dependencies (make sure python-dotenv is in pyproject.toml)
 RUN uv pip install . --system
 
-# Copy the rest of the application
+# Now copy the rest of the app
 COPY . .
 
-# Ensure CUDA is available
+# Set visible GPU (optional)
 ENV CUDA_VISIBLE_DEVICES=0
+# prevent user site packages from being used
+ENV PYTHONNOUSERSITE=1
+ENV HF_TOKEN=''
+ENV CACHE_DIR=''
+ENV HF_LOCAL_STORAGE=''
 
-# HF_TOKEN will be passed at runtime
-ENV HF_TOKEN=""
+# Do NOT set HF_TOKEN here — pass it via -e at runtime
 
-# Run the application
+# Run main script
 CMD ["python", "main.py"]
 
-# Build command:
-# docker build --platform linux/amd64 -t pytorch-bert-mrpc .
+# docker build --platform linux/amd64 -t springlight123/finetune .
 
 # Run command with token:
-# docker run --rm --platform linux/amd64 -e HF_TOKEN=your_token_here -v $(pwd)/cache:/app/cache pytorch-bert-mrpc
+# docker run --rm --platform linux/amd64 -v $(pwd)/cache:/app/cache springlight123/finetune
 
 # For development:
-# docker run --rm --platform linux/amd64 -e HF_TOKEN=your_token_here -v $(pwd):/app -v $(pwd)/cache:/app/cache pytorch-bert-mrpc
+# docker run --rm --platform linux/amd64 -v $(pwd):/app -v $(pwd)/cache:/app/cache springlight123/finetune

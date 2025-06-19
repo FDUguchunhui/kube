@@ -1,0 +1,19 @@
+job_name: test # default to image name
+k8s_user_name: cgu3
+k8s_user_id: 284275
+k8s_user_group: 600567
+k8s_user_home: '/rsrch5/home/biostatistics/cgu3'
+k8s_gpu_pvc: cgu3-gpu-home
+image: springlight123/finetune:latest
+gpu_type: null # NVIDIA-H100-80GB-HBM3
+output: kube_jobs/train.yaml
+# mount
+hf_local_storage: huggingface_cache
+
+# resources
+gpu_low: 1
+gpu_high: 1
+cpu_low: 12
+cpu_high: 12
+memory_low: 1200Gi
+memory_high: 1200Gi
