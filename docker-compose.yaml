@@ -4,10 +4,9 @@ services:
   app:
     image: springlight123/finetune
     platform: linux/amd64
-    # volumes:
-    #   - .:/app # only during testing
+    volumes:
+      - /Users/cgu3/Documents/sandbox/llm_tuning:/home # only during testing
     environment:
       - HF_TOKEN=${HF_TOKEN}
-      - HOME=/Users/cgu3/Documents/sandbox/llm_tuning
       - HF_LOCAL_STORAGE=huggingface_cache
     command: python main.py

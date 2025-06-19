@@ -11,12 +11,11 @@ import dotenv
 
 dotenv.load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
-HOME = os.getenv("CACHE_DIR")
 HF_LOCAL_STORAGE = os.getenv("HF_LOCAL_STORAGE")
-model_path = os.path.join(HOME, HF_LOCAL_STORAGE, "models")
-log_path = os.path.join(HOME, HF_LOCAL_STORAGE, "logs")
-dataset_path = os.path.join(HOME, HF_LOCAL_STORAGE, "datasets")
-cache_path = os.path.join(HOME, HF_LOCAL_STORAGE, "cache")
+model_path = os.path.join(HF_LOCAL_STORAGE, "models")
+log_path = os.path.join(HF_LOCAL_STORAGE, "logs")
+dataset_path = os.path.join(HF_LOCAL_STORAGE, "datasets")
+cache_path = os.path.join(HF_LOCAL_STORAGE, "cache")
 # create the directories if they don't exist
 os.makedirs(model_path, exist_ok=True)
 os.makedirs(log_path, exist_ok=True)

@@ -6,6 +6,7 @@ k8s_user_home: '/rsrch5/home/biostatistics/cgu3'
 k8s_gpu_pvc: cgu3-gpu-home
 image: springlight123/finetune:latest
 gpu_type: null # NVIDIA-H100-80GB-HBM3
+command: ["python", "llm_tuning/main.py"]
 output: kube_jobs/train.yaml
 # mount
 hf_local_storage: huggingface_cache

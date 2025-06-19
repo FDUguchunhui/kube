@@ -49,13 +49,12 @@ def load_template() -> Dict[str, Any]:
                         'name': 'main',
                         'image': '${image}',
                         'env': [
-                            {'name': 'HOME', 'value': '${k8s_user_home}'},
                             {'name': 'HF_LOCAL_STORAGE', 'value': '${hf_local_storage}'},
                             {'name': 'HF_TOKEN', 'value': '${hf_token}'},
                         ],
                         'volumeMounts': [
                             {'name': 'shm', 'mountPath': '/dev/shm'},
-                            {'name': 'home', 'mountPath': '${k8s_user_home}'}
+                            {'name': 'home', 'mountPath': '/home'}
                         ],
                         'resources': {
                             'requests': {
@@ -98,6 +97,10 @@ def substitute_variables(template: Dict[str, Any], variables: Dict[str, str]) ->
     if variables.get('gpu_type'):
         template['spec']['template']['spec']['nodeSelector']['nvidia.com/gpu.product'] = variables['gpu_type']
     
+    # Add command to template
+    if variables.get('command'):
+        template['spec']['template']['spec']['containers'][0]['command'] = variables['command']
+    
     yaml_str = yaml.dump(template)
     for key, value in variables.items():
         if value is not None:  # Only substitute if value is not None
@@ -107,6 +110,7 @@ def substitute_variables(template: Dict[str, Any], variables: Dict[str, str]) ->
 @click.command()
 @click.option('--config', type=str, default=os.getenv('CONFIG_PATH'), help='YAML config file')
 @click.option('--image', type=str, default=None, help='Image')
+@click.option('--command', type=str, default=None, help='Command')
 @click.option('--hf-token', type=str, default=os.getenv('HF_TOKEN'), help='HF token')
 @click.option('--output', type=str, default=None, help='Output YAML file path')
 @click.option('--run', type=str, is_flag=True, help='run the generated job')

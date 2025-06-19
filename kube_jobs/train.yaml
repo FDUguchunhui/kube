@@ -10,9 +10,10 @@ spec:
   template:
     spec:
       containers:
-      - env:
-        - name: CACHE_DIR
-          value: /rsrch5/home/biostatistics/cgu3
+      - command:
+        - python
+        - llm_tuning/main.py
+        env:
         - name: HF_LOCAL_STORAGE
           value: huggingface_cache
         - name: HF_TOKEN
@@ -32,7 +33,7 @@ spec:
         volumeMounts:
         - mountPath: /dev/shm
           name: shm
-        - mountPath: /rsrch5/home/biostatistics/cgu3
+        - mountPath: /home
           name: home
       nodeSelector:
         nvidia.com/gpu.present: 'true'
