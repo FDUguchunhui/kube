@@ -49,6 +49,7 @@ def load_template() -> Dict[str, Any]:
                         'name': 'main',
                         'image': '${image}',
                         'env': [
+                            {'name': 'HOME', 'value': '/home'},
                             {'name': 'HF_LOCAL_STORAGE', 'value': '${hf_local_storage}'},
                             {'name': 'HF_TOKEN', 'value': '${hf_token}'},
                         ],
